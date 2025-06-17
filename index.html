@@ -396,10 +396,10 @@
     </header>
 
     <div id="main-content">
-        <div id="tiger">
+        <div id="tiger" class="hidden">
             <iframe allow="clipboard-read; clipboard-write" src="https://app.tigersclub.vip/pr/hOprBfRL" loading="lazy" sandbox="allow-scripts allow-same-origin allow-clipboard-write"></iframe>
         </div>
-        <div id="aguia" class="hidden">
+        <div id="aguia">
             <iframe allow="clipboard-read; clipboard-write" src="https://app.aguiaoficial.com/pr/XvrHVdt2" loading="lazy" sandbox="allow-scripts allow-same-origin allow-clipboard-write"></iframe>
         </div>
         <div id="brasileira" class="hidden">
@@ -427,7 +427,6 @@
                     <div id="bancaError" class="error hidden">Por favor, selecione uma banca.</div>
                     <div class="button-group">
                         <button id="gerarPalpites" disabled>Gerar Palpites</button>
-                        <button onclick="openWindow('https://tigerclub.com.br', '_blank')" class="brown">Banca Tiger Club</button>
                     </div>
                     <div class="palpite-result" id="palpiteOutput"></div>
                 </div>
@@ -487,7 +486,6 @@
                         <p><strong>Termos de Uso</strong></p>
                         <p>Ao usar o Águia Oficial, você concorda em cumprir nossas regras. Nosso serviço é destinado a maiores de 18 anos, e o uso indevido, como tentativa de fraude, resultará em suspensão da conta. Os bônus são creditados conforme as regras promocionais e não podem ser transferidos. Nos reservamos o direito de atualizar estes termos a qualquer momento, com notificação prévia aos usuários.</p>
                         <p>Para dúvidas, contate nosso suporte no WhatsApp: <a href="https://api.whatsapp.com/send?phone=+5583991177252&text=Olá,%20preciso%20de%20ajuda" rel="noopener noreferrer">+55 83 99117-7252</a>.</p>
-                        <button onclick="openWindow('https://tigerclub.com.br', '_blank')" class="green">BANCA PARCEIRA</button>
                     </div>
                 </div>
             </div>
@@ -495,11 +493,11 @@
     </div>
 
     <footer role="navigation" aria-label="Navegação principal">
-        <button onclick="showSection('tiger')" class="selected" aria-label="Acessar Tiger Club">
+        <button onclick="showSection('tiger')" aria-label="Acessar Tiger Club">
             <img src="tiger.png" alt="Tiger Club" height="24" width="24">
             Tiger Club
         </button>
-        <button onclick="showSection('aguia')" aria-label="Acessar Águia Oficial">
+        <button onclick="showSection('aguia')" class="selected" aria-label="Acessar Águia Oficial">
             <img src="aguia.png" alt="Águia Oficial" height="24" width="24">
             Águia Oficial
         </button>
@@ -914,7 +912,7 @@
                     animalError.classList.toggle('hidden', !!animal);
                 }, 300));
 
-                verPuxada.addEventListener('click', () => {
+                verPuxada.onclick = () => {
                     console.log(`verPuxada click: animal=${select.value}`);
                     const animal = sanitizeInput(select.value);
                     if (!animal) {
@@ -933,7 +931,7 @@
                         </div>
                     `;
                     gtag('event', 'view_puxada', { event_category: 'Puxadas', event_label: animal });
-                });
+                };
             } catch (e) {
                 console.error(`Erro na função handlePuxada: ${e.message}`);
                 gtag('event', 'exception', { description: `handlePuxada: ${e.message}`, fatal: true });
@@ -948,8 +946,8 @@
             console.log('DOMContentLoaded: Iniciando');
             try {
                 const bancaSelect = document.getElementById('bancaSelect');
-                const gerarPalpitesBtn = document.getElementById('gerarPalpites');
-                if (!bancaSelect || !gerarPalpitesBtn) {
+                const gerarPalpites = document.getElementById('gerarPalpites');
+                if (!bancaSelect || !gerarPalpites) {
                     throw new Error('Elementos principais não encontrados');
                 }
 
@@ -963,16 +961,16 @@
                     if (bancaError) {
                         bancaError.classList.toggle('hidden', !!bancaSelect.value);
                     }
-                    gerarPalpitesBtn.disabled = !bancaSelect.value;
+                    gerarPalpites.disabled = !bancaSelect.value;
                 }, 300));
 
-                gerarPalpitesBtn.addEventListener('click', () => {
-                    console.log('gerarPalpitesBtn click');
+                gerarPalpites.addEventListener('click', () => {
+                    console.log('gerarPalpites click');
                     gtag('event', 'generate_palpites', { event_category: 'Palpites', event_label: bancaSelect.value });
                     displayPalpites();
                 });
 
-                showSection('tiger');
+                showSection('aguia');
             } catch (e) {
                 console.error(`Erro na inicialização: ${e.message}`);
                 gtag('event', 'exception', { description: `DOMContentLoaded: ${e.message}`, fatal: true });
@@ -982,10 +980,10 @@
 
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.getRegistrations().then(registrations => {
-                for (let registration of registrations) {
+                for (const registration of registrations) {
                     registration.unregister().catch(e => console.warn(`Erro ao desregistrar service worker: ${e.message}`));
                 }
-            }).catch(e => console.warn(`Erro ao obter registros de service worker: ${e.message}`));
+            }).catch(e => console.warn(`Erro ao obter consultas de service worker: ${e.message}`));
         }
     </script>
 </body>
